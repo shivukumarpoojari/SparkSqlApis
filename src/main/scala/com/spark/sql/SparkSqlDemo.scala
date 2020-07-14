@@ -8,6 +8,7 @@ import scala.util.Random
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{IntegerType, StringType, StructType}
 
+
 object SparkSqlDemo {
   @transient lazy val logger=Logger.getLogger(getClass.getName)
 
@@ -18,7 +19,7 @@ object SparkSqlDemo {
     logger.info("Spark session has been created")
 
     logger.info("Creating rdd using sparksession of sparkcontext of parallelize method")
-    val rdd=spark.sparkContext.parallelize(1 to 10)
+    /*val rdd=spark.sparkContext.parallelize(1 to 10)
     logger.info("Imported scala.util.Random")
     logger.info("Creating a tuple")
 //    val rnd =Random.nextInt(100)
@@ -61,10 +62,40 @@ object SparkSqlDemo {
     println(colums(1))
     data1.toDF("Language","user_count").printSchema()
     val dfResult=data1.toDF(colums:_*)
-    dfResult
+    dfResult*/
 // spark.sql("select * from test").show()
 
     //=====================================2020-07-14===================================//
+
+    val rdd =spark.sparkContext.parallelize(1 to 10)
+    val mapping=rdd.map{x=>(x,Random.nextInt(100)*x)}
+    import spark.implicits._
+    val df1=mapping.toDF("key","value")
+    df1.show()
+    df1.withColumn("add",col("key")+col("value")).show()
+    df1.withColumn("ConcatTwoColumn",concat(col("key"), col("value").cast(StringType))).show()
+    val data = Seq(
+            Row(Row("James ","","Smith"),"36636","M","3000"),
+             Row(Row("Michael ","Rose",""),"40288","M","4000"),
+             Row(Row("Robert ","","Williams"),"42114","M","4000"),
+             Row(Row("Maria ","Anne","Jones"),"39192","F","4000"),
+             Row(Row("Jen","Mary","Brown"),"","F","-1")
+                   )
+    val dataRdd=spark.sparkContext.parallelize(data)
+    val schema=new StructType().add("name",new StructType().add("fname",StringType).add("mname",StringType).add("lname",StringType))
+                               .add("dob",StringType).add("sex",StringType).add("sal",StringType)
+
+    val df2=spark.createDataFrame(dataRdd,schema)
+    df2.show()
+    val df3=spark.createDataFrame(dataRdd,schema).show(false)//DOUBT how to create this one by usind toDf//
+    df2.printSchema()
+    df2.withColumn("sal", col("sal").cast("Integer")).printSchema()
+    df2.show()
+    df2.withColumn("sal",col("sal")*100).show()
+    df2.withColumn("increment",col("sal")*100).show()
+    //=======================================================================================//
+
+
 
 
 
