@@ -1,0 +1,8 @@
+20/07/13 20:24:00 INFO SparkSqlDemo$: starts sparksesssion
+20/07/13 20:24:10 INFO SparkSqlDemo$: Spark session has been created
+20/07/13 20:24:10 INFO SparkSqlDemo$: Creating rdd using sparksession of sparkcontext of parallelize method
+20/07/13 20:24:11 INFO SparkSqlDemo$: Imported scala.util.Random
+20/07/13 20:24:11 INFO SparkSqlDemo$: Creating a tuple
+20/07/13 20:24:11 INFO SparkSqlDemo$: Importing implicits
+20/07/13 20:24:11 INFO SparkSqlDemo$: Creating dataframe from rdd using toDF() implicit method 
+20/07/13 20:24:16 INFO SparkSqlDemo$: Adding one more column called add to existing dataframe
