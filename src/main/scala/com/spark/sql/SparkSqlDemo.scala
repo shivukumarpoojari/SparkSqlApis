@@ -6,8 +6,8 @@ import org.apache.log4j.Logger
 
 import scala.util.Random
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types.{IntegerType, StringType, StructType}
-
+import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
+import org.apache.spark.sql.types._
 
 object SparkSqlDemo {
   @transient lazy val logger=Logger.getLogger(getClass.getName)
@@ -67,7 +67,7 @@ object SparkSqlDemo {
 
     //=====================================2020-07-14===================================//
 
-    val rdd =spark.sparkContext.parallelize(1 to 10)
+   /* val rdd =spark.sparkContext.parallelize(1 to 10)
     val mapping=rdd.map{x=>(x,Random.nextInt(100)*x)}
     import spark.implicits._
     val df1=mapping.toDF("key","value")
@@ -94,6 +94,57 @@ object SparkSqlDemo {
     df2.withColumn("sal",col("sal")*100).show()
     df2.withColumn("increment",col("sal")*100).show()
     //=======================================================================================//
+
+     df2.withColumn("state",lit("Karnataka")).withColumn("country",lit("India")).show()
+     df2.withColumnRenamed("sex","gender").show()
+     val df11= df2.withColumn("state",lit("Karnataka")).withColumn("country",lit("India"))
+       df11.show()
+       df11.drop("state").show()
+    val nameAddData = Seq(("Robert, Smith", "1 Main st, Newark, NJ, 92537"),("Maria, Garcia","3456 Walnut st, Newark, NJ, 94732"))
+    val columns=Seq("name","address")
+
+   val df4=spark.createDataFrame(nameAddData).toDF(columns:_*)
+       df4.printSchema()
+       df4.show(false)
+
+    val df5=df4.map(x=>{
+      val nameSplit=x.getAs[String](0).split(",")
+      val addSplit=x.getAs[String](1).split(",")
+      (nameSplit(0),nameSplit(1),addSplit(0),addSplit(1),addSplit(2),addSplit(3))
+    })
+    val df6=df5.toDF("Firstname","LastName","AddressLine","City","state","Zipcode")
+    df6.printSchema()
+    df6.show()
+    df6.withColumn("zipcode",when(trim(col("zipcode"))===92537,999).otherwise(col(("zipcode")))).show()*/
+
+    //====================================16/7/2020================================================================================================//
+    logger.info("this fallowing code is practised on the date of 16/7/2020")
+    import spark.implicits._
+
+    val data1=spark.sparkContext.parallelize(List(("java",100000),("python",50000),("scala",800000)))
+    val column=Seq("Language","user_count")
+    column(0)
+    column(1)
+    val df7=spark.createDataFrame(data1).toDF(column:_*)
+    df7.printSchema()
+    df7.show()
+    val dataa1=Seq(("java",100000),("python",500000000),("scala",800000000))
+
+    val rdd3=spark.sparkContext.parallelize(dataa1)
+    val df8=rdd3.toDF("language","userControl").show()
+    val df9= dataa1.toDF("zzz","XXX").show()
+    val df10=dataa1.toDF().show()
+
+    val rowData=dataa1.map(x=>Row(x._1,x._2))
+    println(rowData)
+//    val schema_jul=StructType(column.map(k=>StructField(k,StringType,true)))
+//    val df11=spark.createDataFrame(rowData,schema_jul)
+
+    val csvDf=spark.read.csv("C:/Users/user/IdeaProjects/SparkSqlApis/sampleData.csv")
+    csvDf.show()
+
+
+
 
 
 
